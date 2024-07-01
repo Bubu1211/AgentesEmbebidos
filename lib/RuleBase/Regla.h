@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "string.h"
-#include "Hecho.h"
+#include <Antecedente.h>
+#include <Consecuente.h>
 
 enum Operadores
 {
@@ -9,40 +10,71 @@ enum Operadores
   NOT = 2
 };
 
+bool op_and(Antecedente *a, Antecedente *b)
+{
+  return a->get_valor() && b->get_valor();
+}
+
+bool op_or(Antecedente *a, Antecedente *b)
+{
+  return a->get_valor() || b->get_valor();
+}
+
+bool op_not(Antecedente *a, Antecedente *b)
+{
+  return !b->get_valor();
+}
+
+
 class Regla
 {
-public:
-  Hecho antecedentes[10];
+private:
+  Antecedente *antecedentes;
   Operadores operador;
-  Hecho *consecuente;
+  Consecuente *consecuente;
   int tamAntecedentes;
+  typedef bool (*Operandos)(Antecedente *a, Antecedente *b);
+  Operandos opFuncion;
 
-  Regla(Operadores op, Hecho *c)
+public:
+  Regla(Operadores op, Consecuente *c)
   {
     tamAntecedentes = 0;
-    operador = op;
+    set_operador(op);
     consecuente = c;
   }
 
-  void set_consecuente(Hecho *consecuente)
+  void set_consecuente(Consecuente *consecuente)
   {
     this->consecuente = consecuente;
   }
   void set_operador(Operadores operador)
   {
     this->operador = operador;
+    switch (this->operador)
+    {
+    case Operadores::AND: opFuncion = op_and;
+      break;
+    case Operadores::OR: opFuncion = op_or;
+      break;
+    case Operadores::NOT: opFuncion = op_not;
+      break;
   }
+}
 
-  void add_antecedente(Hecho a)
+  void add_antecedente(Antecedente a)
   {
     if (tamAntecedentes >= 9)
       return;
+
+    /*if(antecedentes == nullptr)
+      return;*/
 
     tamAntecedentes++;
     antecedentes[tamAntecedentes - 1] = a;
   }
 
-  void set_antecedentes(Hecho a[], int tam)
+  void set_antecedentes(Antecedente a[], int tam)
   {
     if (tam > 10)
       return;
@@ -52,27 +84,16 @@ public:
   }
   void evaluar()
   {
-
     bool verdadero;
     for (int i = 1; i < tamAntecedentes; i++)
     {
-      antecedentes[i].cambio_valor();
-      antecedentes[i - 1].cambio_valor();
-
-      switch (operador)
-      {
-      case AND:
-        verdadero = antecedentes[i].valor && antecedentes[i - 1].valor;
-        break;
-      case OR:
-        verdadero = antecedentes[i].valor || antecedentes[i - 1].valor;
-        break;
-      case NOT:
-        verdadero = !antecedentes[i - 1].valor;
-        break;
-      }
+      antecedentes[i].activacion();
+      antecedentes[i - 1].activacion();
+      verdadero = opFuncion(&antecedentes[i], &antecedentes[i-1]);
     }
-    this->consecuente->valor = verdadero;
-    this->consecuente->cambio_estado();
+    if(verdadero) 
+      consecuente->ejecutar();
+    else  
+      consecuente->no_activado();
   }
 };

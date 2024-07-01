@@ -1,16 +1,26 @@
 #include "Arduino.h"
 #include "string.h"
 
-class Hecho
-{
-public:
-  String id;
-  bool valor;
-  typedef bool (*CambioValor)(void);
+/*
+typedef bool (*CambioValor)(void);
   CambioValor funcionCambio;
   typedef void (*CambioEstado)(void);
   CambioEstado funcionEstadoTrue;
   CambioEstado funcionEstadoFalso;
+*/
+
+enum KEYS_ACT{
+    OK=0, FALLO=-1
+};
+
+class Hecho
+{
+
+protected:
+  String id;
+  bool valor;
+  
+public:
 
   Hecho()
   {
@@ -23,63 +33,23 @@ public:
     this->id = id;
   }
 
-  void set_cambio_valor(CambioValor cambio)
+  void set_id(String id)
   {
-    this->funcionCambio = cambio;
+    this->id = id;
   }
 
-  void set_funciones(CambioValor cambioValor, CambioEstado ct, CambioEstado cf)
+  String get_id()
   {
-    this->funcionCambio = cambioValor;
-    this->funcionEstadoTrue = ct;
-    this->funcionEstadoFalso = cf;
+    return this->id;
   }
 
-  void set_estados(CambioEstado verdad, CambioEstado falso)
+  bool get_valor()
   {
-    this->funcionEstadoTrue = verdad;
-    this->funcionEstadoFalso = falso;
+    return this->valor;
   }
 
-  void set_estado_true(CambioEstado ce)
+  void set_Valor(bool valor)
   {
-    this->funcionEstadoTrue = ce;
-  }
-
-  void set_estado_false(CambioEstado ce)
-  {
-    this->funcionEstadoFalso = ce;
-  }
-
-  void cambio_valor()
-  {
-    if (funcionCambio != nullptr)
-    {
-      Serial.print(" Cambio valor: ");
-      Serial.print(id);
-      this->valor = funcionCambio();
-      Serial.print(" = ");
-      Serial.println(valor);
-    }
-    else
-    {
-      Serial.println("Puntero a función vacio");
-    }
-  }
-
-  void cambio_estado()
-  {
-    if (valor)
-    {
-      if (funcionEstadoTrue == nullptr)
-        return;
-      funcionEstadoTrue();
-    }
-    else
-    {
-      if (funcionEstadoFalso == nullptr)
-        return;
-      funcionEstadoFalso();
-    }
+    this->valor = valor;
   }
 };
