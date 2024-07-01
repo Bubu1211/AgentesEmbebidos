@@ -1,3 +1,6 @@
+#ifndef Consecuente_H
+#define Consecuente_H
+
 #include "Arduino.h"
 #include "string.h"
 #include <Hecho.h>
@@ -9,6 +12,11 @@ class Consecuente : public Hecho{
         Funcion ejecucion;
 
     public:
+
+        Consecuente(String id)
+        {
+            this->id = id;
+        }
 
         void set_ejecucion(Funcion funcion)
         {
@@ -23,11 +31,11 @@ class Consecuente : public Hecho{
         int ejecutar()
         {
             if(ejecucion == nullptr)
-                return KEYS_ACT::FALLO;
+                return -1; //KEYS_ACT::FALLO;
             
             this->valor = true;
             this->ejecucion();
-            return KEYS_ACT::OK;
+            return 0; //KEYS_ACT::OK;
         }
 
         void no_activado()
@@ -35,3 +43,5 @@ class Consecuente : public Hecho{
             this->valor = false;
         }
 };
+
+#endif

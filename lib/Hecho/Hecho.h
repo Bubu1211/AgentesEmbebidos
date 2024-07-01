@@ -1,3 +1,6 @@
+#ifndef Hecho_H
+#define Hecho_H
+
 #include "Arduino.h"
 #include "string.h"
 
@@ -9,9 +12,6 @@ typedef bool (*CambioValor)(void);
   CambioEstado funcionEstadoFalso;
 */
 
-enum KEYS_ACT{
-    OK=0, FALLO=-1
-};
 
 class Hecho
 {
@@ -53,3 +53,5 @@ public:
     this->valor = valor;
   }
 };
+
+#endif

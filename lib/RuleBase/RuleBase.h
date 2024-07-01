@@ -1,3 +1,6 @@
+#ifndef RuleBase_H
+#define RuleBase_H
+
 #include "Arduino.h"
 #include "string.h"
 #include <Antecedente.h>
@@ -28,3 +31,5 @@ class RuleBase{
                 reglas[i]->evaluar();
         }
 };
+
+#endif

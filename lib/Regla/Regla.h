@@ -1,3 +1,6 @@
+#ifndef Regla_H
+#define Regla_H
+
 #include "Arduino.h"
 #include "string.h"
 #include <Antecedente.h>
@@ -7,7 +10,8 @@ enum Operadores
 {
   AND = 0,
   OR = 1,
-  NOT = 2
+  NOT = 2,
+  THEN = 3
 };
 
 bool op_and(Antecedente *a, Antecedente *b)
@@ -97,3 +101,5 @@ public:
       consecuente->no_activado();
   }
 };
+
+#endif

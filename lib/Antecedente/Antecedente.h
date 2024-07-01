@@ -1,3 +1,6 @@
+#ifndef Antecedente_H
+#define Antecedente_H
+
 #include "Arduino.h"
 #include "string.h"
 #include <Hecho.h>
@@ -9,6 +12,12 @@ class Antecedente : public Hecho{
         Funcion cambiar_valor;
 
     public:
+
+        Antecedente(String id)
+        {
+            this->id = id;
+        }
+
         void set_cambio_valor(Funcion funcion)
         {
             this->cambiar_valor = funcion;
@@ -22,9 +31,11 @@ class Antecedente : public Hecho{
         int activacion()
         {
             if(cambiar_valor == nullptr)
-                return KEYS_ACT::FALLO;
+                return -1; //KEYS_ACT::FALLO;
             
             this->valor = this->cambiar_valor();
-            return KEYS_ACT::OK;
+            return 0;//KEYS_ACT::OK;
         }
 };
+
+#endif
