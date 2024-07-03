@@ -1,6 +1,8 @@
 
 #include <Pin.h>    //Librería adicional 
 #include <Hecho.h>
+#include <Regla.h>
+#include <RuleBase.h>
 
 //constantes predefinidas pra los GPIO
 #define PIN_BOTON1 5
@@ -23,6 +25,15 @@ Pin* verde = Pin::digital(PIN_VERDE, OUTPUT);
 Hecho hb1("Boton 1", 1), hb2("Boton 2", 2), hb3("Boton 3", 3);
 Hecho a("Led 1", 4), b("Led 2", 5), c("Led 3", 8); 
 
+//Reglas 
+Regla r1("Regla led rojo", Operadores::AND, &a);
+Regla r2("Regla led verde", Operadores::AND, &b);
+Regla r3("Regla led azul", Operadores::AND, &c);
+
+//Base de reglas
+RuleBase base("Base reglas 1");
+
+
 /*función de activación, al ejecutarse, da su correspondiente valor de verdad a 
 //cada Hecho*/
 void activacion()
@@ -30,6 +41,7 @@ void activacion()
   hb1.valor = boton1->read();
   hb2.valor = boton2->read();
   hb3.valor = boton3->read();
+
   Serial.printf("Boton 1: %d | boton 2: %d | boton 3: %d \n", hb1.valor, hb2.valor, hb3.valor);
 }
 
@@ -37,12 +49,10 @@ void activacion()
 void efecto()
 {
 
-  //Esto lo hacen las reglas
-  a.valor = hb1.valor && hb2.valor;
-  b.valor = hb1.valor && hb3.valor;
-  c.valor = hb2.valor && hb3.valor;
-  
   Serial.printf("Rojo 1: %d | verde 2: %d | azul 3: %d \n", a.valor, b.valor, c.valor);
+  rojo->write(LOW);
+  verde->write(LOW);
+  azul->write(LOW);
 
   if(a.valor)
     rojo->write(HIGH);
@@ -58,11 +68,25 @@ void efecto()
 void setup()
 {
   Serial.begin(9600);
+  //agregar antecedentes a las reglas
+  r1.addHecho(&hb1);
+  r1.addHecho(&hb2);
+  r2.addHecho(&hb1);
+  r2.addHecho(&hb3);
+  r3.addHecho(&hb2);
+  r3.addHecho(&hb3);
+
+  //agregar reglas
+  base.addRegla(r1);
+  base.addRegla(r2);
+  base.addRegla(r3);
+
 }
 
 void loop()
 {
   activacion();
+  base.chain();
   efecto();
   delay(1000);
 }
