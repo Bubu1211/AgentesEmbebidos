@@ -39,8 +39,11 @@ void Regla::evaluar()
 }
 void Regla::addHecho(Hecho *h)
 {
-    antecedentes[tamAntecedentes++] = h;
+  antecedentes[tamAntecedentes++] = h;
 }
+
+void Regla::addHechos(){}
+
 void Regla::setConsecuente(Hecho *h)
 {
     this->consecuente = h;

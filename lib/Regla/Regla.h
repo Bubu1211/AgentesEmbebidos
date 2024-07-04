@@ -20,7 +20,19 @@ class Regla{
         Regla();
         void evaluar();
         void addHecho(Hecho*);
+        template<typename T, typename... Args>
+        void addHechos(T,Args...);
+        void addHechos();
         void setConsecuente(Hecho*);
 };
+
+
+template<typename T, typename... Args>
+void Regla::addHechos(T prime, Args... args)
+{
+  antecedentes[tamAntecedentes++] = prime;
+  //if(sizeof...(args)>0){
+  addHechos(args...);
+}
 
 #endif

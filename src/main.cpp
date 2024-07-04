@@ -33,7 +33,6 @@ Regla r3("Regla led azul", Operadores::AND, &c);
 //Base de reglas
 RuleBase base("Base reglas 1");
 
-
 /*función de activación, al ejecutarse, da su correspondiente valor de verdad a 
 //cada Hecho*/
 void activacion()
@@ -69,24 +68,19 @@ void setup()
 {
   Serial.begin(9600);
   //agregar antecedentes a las reglas
-  r1.addHecho(&hb1);
-  r1.addHecho(&hb2);
-  r2.addHecho(&hb1);
-  r2.addHecho(&hb3);
-  r3.addHecho(&hb2);
-  r3.addHecho(&hb3);
+  r1.addHechos(&hb1, &hb2);
+  r2.addHechos(&hb1, &hb3);
+  r3.addHechos(&hb2, &hb3);
+       //r3.addHecho(&hb3);
 
   //agregar reglas
-  base.addRegla(r1);
-  base.addRegla(r2);
-  base.addRegla(r3);
-
+  base.addReglas(r1, r2, r3);
+  base.setActivacion(activacion);
+  base.setEfecto(efecto);
 }
 
 void loop()
 {
-  activacion();
   base.chain();
-  efecto();
-  delay(1000);
+  //delay(1);
 }
