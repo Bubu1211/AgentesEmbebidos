@@ -13,6 +13,7 @@ class Hecho{
     public:
         bool valor;
         Hecho(String, int);
+        Hecho(String);
         String getNombre();
         int getId();
 };

@@ -9,6 +9,11 @@ Hecho::Hecho(String nombre, int id)
     this->id = id;
     this->valor = false; 
 }
+Hecho::Hecho(String nombre)
+{
+    this->nombre = nombre;
+    this->valor = false; 
+}
 String Hecho::getNombre()
 {
     return this->nombre;

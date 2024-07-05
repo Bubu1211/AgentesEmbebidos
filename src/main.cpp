@@ -1,86 +1,90 @@
-
-#include <Pin.h>    //Librería adicional 
-#include <Hecho.h>
-#include <Regla.h>
+#include "Arduino.h"
+#include <BaseHechos.h>
 #include <RuleBase.h>
+#include <Pin.h>
 
-//constantes predefinidas pra los GPIO
-#define PIN_BOTON1 5
-#define PIN_BOTON2 33
-#define PIN_BOTON3 32
-#define PIN_ROJO 2
-#define PIN_AZUL 4
-#define PIN_VERDE 15
+/*
+Objetos y variables globales
+*/
+RuleBase baseReglas("SExperto controlador de invernadero");   //SE conformado por una base de reglas 
+float lecturaHumTierra;
+float HUMEDAD_MINIMA = 30;
 
-//pines de los botones
-Pin* boton1 = Pin::digital(PIN_BOTON1, INPUT);
-Pin* boton2 = Pin::digital(PIN_BOTON2, INPUT);
-Pin* boton3 = Pin::digital(PIN_BOTON3, INPUT);
-//Pines de los leds
-Pin* rojo  = Pin::digital(PIN_ROJO, OUTPUT);
-Pin* azul  = Pin::digital(PIN_AZUL, OUTPUT);
-Pin* verde = Pin::digital(PIN_VERDE, OUTPUT);
+/*
+  Pines necesarios
+*/
+Pin* pHumTierra = Pin::analog(32, INPUT);
+Pin* bomba      = Pin::digital(18, OUTPUT);
 
-//Hechos de verdad
-Hecho hb1("Boton 1", 1), hb2("Boton 2", 2), hb3("Boton 3", 3);
-Hecho a("Led 1", 4), b("Led 2", 5), c("Led 3", 8); 
-
-//Reglas 
-Regla r1("Regla led rojo", Operadores::AND, &a);
-Regla r2("Regla led verde", Operadores::AND, &b);
-Regla r3("Regla led azul", Operadores::AND, &c);
-
-//Base de reglas
-RuleBase base("Base reglas 1");
-
-/*función de activación, al ejecutarse, da su correspondiente valor de verdad a 
-//cada Hecho*/
+/*
+Dosfunciones necesarias para activar las variables
+y para producir un efecto
+*/
 void activacion()
 {
-  hb1.valor = boton1->read();
-  hb2.valor = boton2->read();
-  hb3.valor = boton3->read();
+  lecturaHumTierra = map(pHumTierra->read(), 0, 4095,100, 0);
+  Serial.printf("\n Lectura de humedad: %f", lecturaHumTierra);
 
-  Serial.printf("Boton 1: %d | boton 2: %d | boton 3: %d \n", hb1.valor, hb2.valor, hb3.valor);
+  TIERRA_HUM.valor = lecturaHumTierra >= HUMEDAD_MINIMA;
+  TIERRA_SECA.valor = lecturaHumTierra < HUMEDAD_MINIMA;
+  Serial.printf("\n hUMEDA : %d | Seca On: %d \n", TIERRA_HUM.valor, TIERRA_SECA.valor);
+  Serial.printf("\n Bomba nf : %d | Bomba: %d | Bomba Off: %d \n", BOMBA_NF.valor, BOMBA_ON.valor, BOMBA_OFF.valor);
 }
 
-/**Funcion de cambio o efecto */
 void efecto()
 {
+  Serial.printf("\n Bomba nf : %d | Bomba: %d | Bomba Off: %d \n", BOMBA_NF.valor, BOMBA_ON.valor, BOMBA_OFF.valor);
+  if(BOMBA_NF.valor);
+    Serial.println(" La bomba no funciona, debe ser revisada");
 
-  Serial.printf("Rojo 1: %d | verde 2: %d | azul 3: %d \n", a.valor, b.valor, c.valor);
-  rojo->write(LOW);
-  verde->write(LOW);
-  azul->write(LOW);
+  if(BOMBA_ON.valor){
+    bomba->write(HIGH);
+    Serial.println("Prender bomba");
+  }
+  if(BOMBA_OFF.valor){
+    
+    bomba->write(LOW);
+    Serial.println("Apagar bomba");
+  }
+    /*
+  if(BOMBA_OFF.valor){
+    bomba->write(LOW);
+    
+    Serial.println("Apagar bomba");
+  }
+    */
+}
 
-  if(a.valor)
-    rojo->write(HIGH);
-  
-  if(b.valor)
-    verde->write(HIGH);
+/*
+Función que inicializa el sistema basado en reglas, empezando por 
+agregar antecedentes a las reglas y luego se incluyen las reglas en la base de reglas
+*/
+void setup_base_reglas()
+{
+  //Estado inicial de algunos Hechos
+  BOMBA_OFF.valor = true;
 
-  if(c.valor)
-    azul->write(HIGH);
+  regla3.addHechos(&TIERRA_HUM, &BOMBA_ON);
+  regla1.addHechos(&TIERRA_SECA, &BOMBA_OFF);
+  regla14.addHechos(&BOMBA_OFF);
+  regla2.addHechos(&TIERRA_HUM, &BOMBA_ON);
+  baseReglas.addReglas(regla3, regla1, regla14, regla2);
 
+  baseReglas.setActivacion(activacion);
+  baseReglas.setEfecto(efecto);
 }
 
 void setup()
 {
-  Serial.begin(9600);
-  //agregar antecedentes a las reglas
-  r1.addHechos(&hb1, &hb2);
-  r2.addHechos(&hb1, &hb3);
-  r3.addHechos(&hb2, &hb3);
-       //r3.addHecho(&hb3);
-
-  //agregar reglas
-  base.addReglas(r1, r2, r3);
-  base.setActivacion(activacion);
-  base.setEfecto(efecto);
+  Serial.begin(115200);
+  setup_base_reglas();
+  bomba->write(LOW);
+  Serial.println("Inciando programa");
+  delay(3000);
 }
 
 void loop()
 {
-  base.chain();
-  //delay(1);
+  baseReglas.chain();
+  delay(2000);
 }

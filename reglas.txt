@@ -1,0 +1,50 @@
+//var TIERRA_SECA : "La tierra esta seca"
+var TIERRA_HUM  : "La tierra esta húmeda"
+var TEMP_ALT 	: "La temperatura es alta"
+var TEMP_BAJA	: "La temperatura es baja"
+var TEMP_NORMAL : "La temperatura es normal o adecuada"
+var RAD_INT	: "La radiación lumínica es intensa"
+var RAD_NORMAL  : "La radiación es normal"
+var RAD_BAJA 	: "La radiación es baja, requiere luz"
+//var DIA_NORMAL: "El día es un día normal"
+var DIA_NUBLADO : "El día está nublado"
+var DIA_SOLEADO	: "El día está soleado"
+var SIN_LUZ_NATU: "se recibe luz natural"
+var OSCURO	: "Está oscuro"
+var BOMBA_NF	: "La bomba no funciona"
+var BOMBA_ON	: "La bomba está prendida"
+//var BOMBA_OFF	: "La bomba está apagada"
+var WIFI_LOST	: "No hay señal de internet"
+var COMUN_LOST	: "No hay comunicación"
+var DANGER	: "Posible estado de emergencia"
+var PER_ABIERTA	: "Persiana abierta"
+var PER_CERRADA	: "Persiana cerrada"
+var PER_STOP	: "Persiana no se cierra ni abre"
+var PER_MOVE	: "Persiana se esta moviendo"
+var CERRAR_PER	: "Empezar a cerrar persiana"
+var ABRIR_PER	: "Empezar a mover persiana"
+var VENTIL_ON	: "Ventilador prendido"
+var VENTIL_OFF	: "Ventilador apagado"
+var VENTIL_NF   : "Ventilador no funciona"
+var ILUM_ON 	: "Iluminación prendida"
+var ILUM_OFF	: "Iluminación apagada"
+
+Regla3 : IF TIERRA_hum AND BOMBA_ON 	 THEN BOMBA_NF
+Regla1 : IF TIERRA_SECA AND BOMBA_OFF 	 THEN BOMBA_ON
+Regla14: IF NOT BOMBA_OFF                THEN BOMBA_ON
+Regla2 : IF TIERRA_HUM 	AND BOMBA_ON 	 THEN BOMBA_OFF
+
+Regla13: IF TEMP_ALT    AND VENTIL_ON    THEN VENTIL_NF
+Regla4 : IF TEMP_ALT 	AND VENTIL_OFF 	 THEN VENTIL_ON
+Regla5 : IF TEMP_NORMAL	AND VENTIL_ON 	 THEN VENTIL_OFF
+regla10: IF TEMP_BAJA	AND ILUM_OFF	 THEN ILUM_ON
+
+Regla6 : IF RAD_INT 	AND PER_ABIERTA  THEN CERRAR_PER	
+Regla7 : IF CERRAR_PER 	OR  ABRIR_PER 	 THEN PER_MOVE
+Regla8 : IF RAD_NORMAL  AND PER_MOVE	 THEN PER_STOP
+Regla9 : IF RAD_BAJA 	AND PER_CERRADA	 THEN ABRIR_PER
+
+Regla11: IF DIA_NUBLADO OR  OSCURO	 THEN SIN_LUZ_NATU
+Regla12: IF RAD_BAJA 	AND SIN_LUZ_NATU AND  ILUM_OFF 	    THEN ILUM_ON
+
+
