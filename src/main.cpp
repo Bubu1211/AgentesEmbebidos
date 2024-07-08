@@ -23,8 +23,8 @@ float lecturaHumTierra;
 float lecturaTemperatura;
 float lecturaLuz;
 float HUMEDAD_MINIMA = 30;
-float TEMPERATURA_MINIMA = 25;
-float TEMPERATURA_MAXIMA = 28;
+float TEMPERATURA_MINIMA = 27.5;
+float TEMPERATURA_MAXIMA = 29;
 float LUZ_INTENSA = 3000;
 float LUZ_BAJA = 300;
 float LUZ_NONATURAL = 200;
@@ -38,7 +38,7 @@ int NG_PER_CERRADA = 0;
 Pin* pHumTierra = Pin::analog(32, INPUT);
 Pin* bomba      = Pin::digital(18, OUTPUT);
 Pin* ventilador = Pin::digital(19, OUTPUT);
-Pin* ilum       = Pin::digital(21, OUTPUT);
+Pin* ilum       = Pin::digital(33, OUTPUT);
 
 /*
 Dosfunciones necesarias para activar las variables
@@ -129,9 +129,10 @@ void setup_base_reglas()
   regla9.addHechos(&RAD_INT);
   regla10.addHechos(&RAD_BAJA);
   regla12.addHechos(&SIN_LUZ_NATU);
+  regla13.addHechos(&TEMP_BAJA);
   baseReglas.addReglas(
-    regla1, regla2, regla3, regla4, regla5, regla6,
-     regla7, regla8, regla12, regla9, regla10
+    regla1, regla2, regla3, regla4,regla13, regla5, regla6,
+     regla7, regla8, regla9, regla10
   );
   baseReglas.setActivacion(activacion);
   baseReglas.setEfecto(efecto);
@@ -141,12 +142,22 @@ void setup()
 {
   Serial.begin(115200);
   setup_base_reglas();
-  bomba->write(LOW);
-  Serial.println("Inciando programa");
   dht.setup(PIN_DHT, DHTesp::DHT11);
   Wire.begin(SDA, SCL);
   sensor_luz.begin();
   persiana.attach(SERVO_PERSIANA);
+
+  Serial.println("Inicio....");
+  bomba->write(HIGH);
+  ilum->write(HIGH);
+  ventilador->write(HIGH);
+  persiana.write(NG_PER_ABIERTA);
+  persiana.write(NG_PER_CERRADA);
+  delay(3000);
+  bomba->write(LOW);
+
+  Serial.println("Inciando programa");
+  
   delay(3000);
 }
 

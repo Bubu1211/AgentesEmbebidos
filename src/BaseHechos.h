@@ -57,3 +57,4 @@ Regla regla8("Apagar iluminación ", Operadores::AND, &ILUM_OFF);
 Regla regla9("RAD INTENSA CERRAR PERSIANA", Operadores::AND, &CERRAR_PER);
 Regla regla10("Radicación Baja", Operadores::AND, &ABRIR_PER);
 Regla regla12("LUZ NATURAL ", Operadores::AND, &ILUM_ON);
+Regla regla13("Apagar ventilador si la temp es baja", Operadores::AND, &VENTIL_OFF);
