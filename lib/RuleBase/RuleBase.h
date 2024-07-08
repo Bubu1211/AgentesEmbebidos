@@ -20,6 +20,7 @@ class RuleBase{
         void chain();
         void setActivacion(Funcion);
         void setEfecto(Funcion);
+        String toString();
 };
 
  template <typename T, typename...Args>

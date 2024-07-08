@@ -50,6 +50,9 @@ Regla9 : IF RAD_BAJA 	AND PER_CERRADA	 THEN ABRIR_PER
 Regla11: IF DIA_NUBLADO OR  OSCURO	 THEN SIN_LUZ_NATU
 Regla12: IF RAD_BAJA 	AND SIN_LUZ_NATU AND  ILUM_OFF 	    THEN ILUM_ON
 ==================================================================================================
+
+
+
 Regla1 : IF TIERRA_hum  	 THEN BOMBA_OFF
 Regla2 : IF TIERRA_SECA  	 THEN BOMBA_ON
 
@@ -63,5 +66,3 @@ regla12:IF SIN_LUZ_NATU   THEN ILUM_ON
 
 Regla9 : IF RAD_INT 	  THEN CERRAR_PER
 Regla10 : IF RAD_BAJA  	  THEN ABRIR_PER
-regla11:IF RAD_NORMAL     THEN PER_STOP
-regla12:IF SIN_LUZ_NATU   THEN ILUM_ON

@@ -31,7 +31,7 @@ Hecho VENTIL_OFF	( "Ventilador apagado");
 Hecho VENTIL_NF   ( "Ventilador no funciona");
 Hecho ILUM_ON 	( "Iluminación prendida");
 Hecho ILUM_OFF	( "Iluminación apagada");
-
+/*
 Regla regla3("Bomba no funciona", Operadores::AND, &BOMBA_NF);
 Regla regla1("Prender la bomba", Operadores::AND, &BOMBA_ON);
 Regla regla14("Bomba prendida, contradicción", Operadores::NOT, &BOMBA_ON);
@@ -44,3 +44,16 @@ Regla regla5("Apagar ventilador", Operadores::AND, &VENTIL_OFF);
 Regla regla10("Prender iluminación",Operadores::AND, &ILUM_ON);
 Regla regla17("Control oposición de iluminacion", Operadores::NOT, &ILUM_ON);
 Regla regla16("Aoagar iluminacion", Operadores::AND, &ILUM_OFF);
+*/
+
+Regla regla1("Apagar la bomba", Operadores::AND, &BOMBA_OFF);
+Regla regla2("Prender la bomba", Operadores::AND, &BOMBA_ON);
+Regla regla3("Prender ventilador", Operadores::AND, &VENTIL_ON);
+Regla regla4("Prender iluminación", Operadores::AND, &ILUM_ON);
+Regla regla5("Apagar ventilador", Operadores::AND, &VENTIL_OFF);
+Regla regla6("Apagar iluiminación", Operadores::AND, &ILUM_OFF);
+Regla regla7("Apagar ventilador", Operadores::AND, &VENTIL_OFF);
+Regla regla8("Apagar iluminación ", Operadores::AND, &ILUM_OFF);
+Regla regla9("RAD INTENSA CERRAR PERSIANA", Operadores::AND, &CERRAR_PER);
+Regla regla10("Radicación Baja", Operadores::AND, &ABRIR_PER);
+Regla regla12("LUZ NATURAL ", Operadores::AND, &ILUM_ON);

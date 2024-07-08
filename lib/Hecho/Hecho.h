@@ -15,6 +15,7 @@ class Hecho{
         Hecho(String, int);
         Hecho(String);
         String getNombre();
+        String toString();
         int getId();
 };
 

@@ -3,19 +3,34 @@
 #include <RuleBase.h>
 #include <Pin.h>
 #include <DHTesp.h>
+#include <Wire.h>
+#include <BH1750.h>
+#include <ESP32Servo.h>
 
 #define PIN_DHT 14
+#define SCL 22
+#define SDA 21  
+#define SERVO_PERSIANA 23
 
 /*
 Objetos y variables globales
 */
 RuleBase baseReglas("SExperto controlador de invernadero");   //SE conformado por una base de reglas 
 DHTesp dht;
+BH1750 sensor_luz;
+Servo persiana;
 float lecturaHumTierra;
 float lecturaTemperatura;
+float lecturaLuz;
 float HUMEDAD_MINIMA = 30;
 float TEMPERATURA_MINIMA = 25;
-float TEMPERATURA_MAXIMA = 27;
+float TEMPERATURA_MAXIMA = 28;
+float LUZ_INTENSA = 3000;
+float LUZ_BAJA = 300;
+float LUZ_NONATURAL = 200;
+float NG_PER_ABIERTA = 50;
+float NG_PER_CERRADA = 0;
+
 
 /*
   Pines necesarios
@@ -35,12 +50,17 @@ void activacion()
   Serial.printf("\n Lectura de humedad: %f", lecturaHumTierra);
   lecturaTemperatura = dht.getTemperature();
   Serial.printf("\n Lectura de temperatura: %f", lecturaTemperatura);
+  lecturaLuz = sensor_luz.readLightLevel();
+  Serial.printf("\n lectura sensor de luz: %f", lecturaLuz);
 
   TIERRA_HUM.valor = lecturaHumTierra >= HUMEDAD_MINIMA;
   TIERRA_SECA.valor = lecturaHumTierra < HUMEDAD_MINIMA;
   TEMP_ALT.valor = lecturaTemperatura >= TEMPERATURA_MAXIMA;
   TEMP_BAJA.valor = lecturaTemperatura <= TEMPERATURA_MINIMA;
-
+  TEMP_NORMAL.valor = lecturaTemperatura > TEMPERATURA_MINIMA && lecturaTemperatura < TEMPERATURA_MAXIMA;
+  SIN_LUZ_NATU.valor = lecturaLuz < LUZ_NONATURAL;
+  RAD_INT.valor = lecturaLuz >= LUZ_INTENSA;
+  RAD_BAJA.valor = lecturaLuz < LUZ_BAJA;
 
 }
 
@@ -77,13 +97,14 @@ void efecto()
     ventilador->write(LOW);
     Serial.println("Vneitlador apagado");
   }
-    /*
-  if(BOMBA_OFF.valor){
-    bomba->write(LOW);
-    
-    Serial.println("Apagar bomba");
+  if(CERRAR_PER.valor){
+    persiana.write(NG_PER_CERRADA);
+    Serial.println("Vneitlador apagado");
   }
-    */
+  if(ABRIR_PER.valor){
+    persiana.write(NG_PER_ABIERTA);
+    Serial.println("Vneitlador apagado");
+  }
 }
 
 /*
@@ -97,21 +118,21 @@ void setup_base_reglas()
   ILUM_OFF.valor = true;
   VENTIL_OFF.valor = true;
 
-  regla3.addHechos(&TIERRA_HUM, &BOMBA_ON);
-  regla1.addHechos(&TIERRA_SECA, &BOMBA_OFF);
-  regla14.addHechos(&BOMBA_OFF);
-  regla2.addHechos(&TIERRA_HUM, &BOMBA_ON);
-  baseReglas.addReglas(regla3, regla1, regla14, regla2);
-
-  regla13.addHechos(&TEMP_ALT, &VENTIL_ON);
-  regla4.addHechos(&TEMP_ALT, &VENTIL_OFF);
-  regla15.addHechos(&VENTIL_OFF);
-  regla5.addHechos(&TEMP_NORMAL, &VENTIL_ON);
-  regla10.addHechos(&TEMP_BAJA, &ILUM_OFF);
-  regla17.addHechos(&ILUM_OFF);
-  regla16.addHechos(&TEMP_NORMAL, &ILUM_ON);
-  baseReglas.addReglas(regla13, regla4, regla15, regla5, regla10, regla17, regla16);
-
+  regla1.addHechos(&TIERRA_HUM);
+  regla2.addHechos(&TIERRA_SECA);
+  regla3.addHechos(&TEMP_ALT);
+  regla4.addHechos(&TEMP_BAJA);
+  regla5.addHechos(&ILUM_ON);
+  regla6.addHechos(&VENTIL_ON);
+  regla7.addHechos(&TEMP_NORMAL);
+  regla8.addHechos(&TEMP_NORMAL);
+  regla9.addHechos(&RAD_INT);
+  regla10.addHechos(&RAD_BAJA);
+  regla12.addHechos(&SIN_LUZ_NATU);
+  baseReglas.addReglas(
+    regla1, regla2, regla3, regla4, regla5, regla6,
+     regla7, regla8, regla12, regla9, regla10
+  );
   baseReglas.setActivacion(activacion);
   baseReglas.setEfecto(efecto);
 }
@@ -123,6 +144,9 @@ void setup()
   bomba->write(LOW);
   Serial.println("Inciando programa");
   dht.setup(PIN_DHT, DHTesp::DHT11);
+  Wire.begin(SDA, SCL);
+  sensor_luz.begin();
+  persiana.attach(SERVO_PERSIANA);
   delay(3000);
 }
 

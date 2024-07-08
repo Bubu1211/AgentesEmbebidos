@@ -20,17 +20,10 @@ void Regla::evaluar()
 {
   if (tamAntecedentes == 1)
   {
-    
-    Serial.print("Consecuente: ");
-  Serial.print(this->consecuente->getNombre());
-  Serial.print(" valor : ");
-  Serial.print(this->consecuente->valor);
-  if(this->operador == Operadores::NOT)
-    this->consecuente->valor = !antecedentes[0]->valor;
-  else
-    this->consecuente->valor = antecedentes[0]->valor;
-  Serial.print(" | AHORA: ");
-  Serial.println(this->consecuente->valor);
+    if(this->operador == Operadores::NOT)
+      this->consecuente->valor = !antecedentes[0]->valor;
+    else
+      this->consecuente->valor = antecedentes[0]->valor;
     return;
   }
   bool verdadero;
@@ -49,13 +42,6 @@ void Regla::evaluar()
       break;
     }
   }
-  Serial.print("Consecuente: ");
-  Serial.print(this->consecuente->getNombre());
-  Serial.print(" valor : ");
-  Serial.print(this->consecuente->valor);
-  this->consecuente->valor = verdadero;
-  Serial.print(" | AHORA: ");
-  Serial.println(this->consecuente->valor);
 }
 void Regla::addHecho(Hecho *h)
 {
@@ -67,4 +53,17 @@ void Regla::addHechos() {}
 void Regla::setConsecuente(Hecho *h)
 {
   this->consecuente = h;
+}
+
+String Regla::toString()
+{
+  String text = "Regla = [";
+  text = text + " nombre: "+this->nombre;
+  text = text + " antecedentes: \n";
+  for(int i = 0; i<tamAntecedentes; i++)
+  {
+    text = text + antecedentes[i]->toString() + "\n";
+  }
+  text = text + " Consecuente "+this->consecuente->toString()+"]";
+  return text;
 }

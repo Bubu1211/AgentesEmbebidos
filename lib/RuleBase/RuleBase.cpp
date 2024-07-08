@@ -39,3 +39,13 @@ void RuleBase::setEfecto(Funcion f)
 {
     this->efecto = f;
 }
+
+String RuleBase::toString()
+{
+    String text = "\nBase de reglas: "+this->nombre;
+    for ( int i = 0; i<=this->tamReglas; i++)
+    {
+        text = text + reglas[i].toString();
+    }
+    return text + "\n";
+}

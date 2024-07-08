@@ -24,6 +24,7 @@ class Regla{
         void addHechos(T,Args...);
         void addHechos();
         void setConsecuente(Hecho*);
+        String toString();
 };
 
 

@@ -22,3 +22,12 @@ int Hecho::getId()
 {
     return this->id;
 }
+
+String Hecho::toString()
+{
+    String text = "Consecuente "+getNombre()+" = ";
+    text = text + valor;
+    text = text + ";";
+    return text;
+
+}
