@@ -28,8 +28,8 @@ float TEMPERATURA_MAXIMA = 28;
 float LUZ_INTENSA = 3000;
 float LUZ_BAJA = 300;
 float LUZ_NONATURAL = 200;
-float NG_PER_ABIERTA = 50;
-float NG_PER_CERRADA = 0;
+int NG_PER_ABIERTA = 50;
+int NG_PER_CERRADA = 0;
 
 
 /*
