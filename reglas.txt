@@ -28,7 +28,7 @@ var VENTIL_OFF	: "Ventilador apagado"
 var VENTIL_NF   : "Ventilador no funciona"
 var ILUM_ON 	: "Iluminación prendida"
 var ILUM_OFF	: "Iluminación apagada"
-
+==================================================================================================
 Regla3 : IF TIERRA_hum AND BOMBA_ON 	 THEN BOMBA_NF
 Regla1 : IF TIERRA_SECA AND BOMBA_OFF 	 THEN BOMBA_ON
 Regla14: IF NOT BOMBA_OFF                THEN BOMBA_ON
@@ -36,8 +36,11 @@ Regla2 : IF TIERRA_HUM 	AND BOMBA_ON 	 THEN BOMBA_OFF
 
 Regla13: IF TEMP_ALT    AND VENTIL_ON    THEN VENTIL_NF
 Regla4 : IF TEMP_ALT 	AND VENTIL_OFF 	 THEN VENTIL_ON
+Regla15: IF NOT VENTIL_OFF               THEN VENTIL_ON
 Regla5 : IF TEMP_NORMAL	AND VENTIL_ON 	 THEN VENTIL_OFF
 regla10: IF TEMP_BAJA	AND ILUM_OFF	 THEN ILUM_ON
+regla 17:IF NOT ILUM_OFF                 THEN ILUM_ON
+regla16: IF TEMP_NORMAL AND ILUM_IN      THEN ILUM_OFF
 
 Regla6 : IF RAD_INT 	AND PER_ABIERTA  THEN CERRAR_PER	
 Regla7 : IF CERRAR_PER 	OR  ABRIR_PER 	 THEN PER_MOVE
@@ -46,5 +49,19 @@ Regla9 : IF RAD_BAJA 	AND PER_CERRADA	 THEN ABRIR_PER
 
 Regla11: IF DIA_NUBLADO OR  OSCURO	 THEN SIN_LUZ_NATU
 Regla12: IF RAD_BAJA 	AND SIN_LUZ_NATU AND  ILUM_OFF 	    THEN ILUM_ON
+==================================================================================================
+Regla1 : IF TIERRA_hum  	 THEN BOMBA_OFF
+Regla2 : IF TIERRA_SECA  	 THEN BOMBA_ON
 
+Regla3: IF TEMP_ALT         THEN VENTIL_ON
+regla4: IF TEMP_BAJA   	    THEN ILUM_ON
+regla5: IF ILUM_ON          THEN VENTIL_OFF
+regla6: IF VENTIL_ON        THEN ILUM_OFF
+regla7: IF TEMP_NORMAL      THEN VENTIL_OFF
+regla8: IF TEMP_NORMAL      THEN ILUM_OFF
+regla12:IF SIN_LUZ_NATU   THEN ILUM_ON
 
+Regla9 : IF RAD_INT 	  THEN CERRAR_PER
+Regla10 : IF RAD_BAJA  	  THEN ABRIR_PER
+regla11:IF RAD_NORMAL     THEN PER_STOP
+regla12:IF SIN_LUZ_NATU   THEN ILUM_ON

@@ -36,3 +36,11 @@ Regla regla3("Bomba no funciona", Operadores::AND, &BOMBA_NF);
 Regla regla1("Prender la bomba", Operadores::AND, &BOMBA_ON);
 Regla regla14("Bomba prendida, contradicción", Operadores::NOT, &BOMBA_ON);
 Regla regla2("Apagar la bomba", Operadores::AND, &BOMBA_OFF);
+
+Regla regla13("Ventilador no funciina", Operadores::AND, &VENTIL_NF);
+Regla regla4("Prender ventilador", Operadores::AND, &VENTIL_ON);
+Regla regla15("Oposicipón o negación", Operadores::NOT, &VENTIL_ON);
+Regla regla5("Apagar ventilador", Operadores::AND, &VENTIL_OFF);
+Regla regla10("Prender iluminación",Operadores::AND, &ILUM_ON);
+Regla regla17("Control oposición de iluminacion", Operadores::NOT, &ILUM_ON);
+Regla regla16("Aoagar iluminacion", Operadores::AND, &ILUM_OFF);
