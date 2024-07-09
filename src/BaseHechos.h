@@ -1,5 +1,6 @@
 #include <Hecho.h>
 #include <Regla.h>
+#include <RuleBase.h>
 
 Hecho TIERRA_SECA("La tierra esta seca");
 Hecho TIERRA_HUM( "La tierra esta húmeda");
@@ -58,3 +59,32 @@ Regla regla9("RAD INTENSA CERRAR PERSIANA", Operadores::AND, &CERRAR_PER);
 Regla regla10("Radicación Baja", Operadores::AND, &ABRIR_PER);
 Regla regla12("LUZ NATURAL ", Operadores::AND, &ILUM_ON);
 Regla regla13("Apagar ventilador si la temp es baja", Operadores::AND, &VENTIL_OFF);
+
+
+/*
+Función que inicializa el sistema basado en reglas, empezando por
+agregar antecedentes a las reglas y luego se incluyen las reglas en la base de reglas
+*/
+void setup_base_reglas(RuleBase *baseReglas)
+{
+  // Estado inicial de algunos Hechos
+  BOMBA_OFF.valor = true;
+  ILUM_OFF.valor = true;
+  VENTIL_OFF.valor = true;
+
+  regla1.addHechos(&TIERRA_HUM);
+  regla2.addHechos(&TIERRA_SECA);
+  regla3.addHechos(&TEMP_ALT);
+  regla4.addHechos(&TEMP_BAJA);
+  regla5.addHechos(&ILUM_ON);
+  regla6.addHechos(&VENTIL_ON);
+  regla7.addHechos(&TEMP_NORMAL);
+  regla8.addHechos(&TEMP_NORMAL);
+  regla9.addHechos(&RAD_INT);
+  regla10.addHechos(&RAD_BAJA);
+  regla12.addHechos(&SIN_LUZ_NATU);
+  regla13.addHechos(&TEMP_BAJA);
+  baseReglas->addReglas(
+      regla1, regla2, regla3, regla4, regla13, regla5, regla6,
+      regla7, regla8, regla9, regla10);
+}

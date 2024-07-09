@@ -10,18 +10,22 @@ class MQTTWiFi
 {
  public:
   //MQTT_WiFi();
+  typedef void (*Funcion)(void);
+  Funcion funcionCallback;
+  void setFCallback(Funcion c);
   void conectar();
   bool conectado();
   void ciclo();
+  void publishMqtt(const char *topic, String mensaje);
+
   //void conexion();
 
   private:
    WiFiClient wifi_client;
    PubSubClient mqtt_client; 
-    
+
    void reconectar();
    void reconnectPublic();
-   void publishMqtt(const char *topic, String mensaje);
 
    /**
    * Constantes para la conexión
@@ -30,7 +34,7 @@ class MQTTWiFi
    * TOPICOS EN MQTT: MHC/invernadero/(param | public)/(sensor)/(otro)
    */
   const char* SSID_RED = "MHC";
-  const char* PASS_RED = "123456789";
+  const char* PASS_RED = "iot12345";
   const char* MQTT_SERVER = "broker.hivemq.com";
   const char* MQTT_USER = "MHC";
   const char* TOPIC_PUBLIC_TEMP = "MHC/invernadero/public/temperatura";

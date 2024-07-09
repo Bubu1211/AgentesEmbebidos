@@ -61,7 +61,11 @@ void MQTTWiFi::publishMqtt(const char *topic, String mensaje)
  mensaje.toCharArray(m, len);
  Serial.printf("Mensaje: %s enviado al topic: %s\n", m, topic);
  mqtt_client.publish(topic, m);
-  
+}
+
+void MQTTWiFi::setFCallback(Funcion f)
+{
+  mqtt_client.setCallback(f);
 }
 
 
